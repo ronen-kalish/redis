@@ -215,12 +215,12 @@ void setTypeInitIterator(setTypeIterator *si, robj *subject) {
     si->subject = subject;
     si->encoding = subject->encoding;
     si->typeOps = (void *)setTypeGetOps(si->encoding);
-    ((setTypeOps*)(si->typeOps))->iterInit(si);
+    si->typeOps->iterInit(si);
 }
 
 void setTypeResetIterator(setTypeIterator *si) {
     si->subject = NULL;
-    setTypeGetOps(si->encoding)->iterReset(si);
+    si->typeOps->iterReset(si);
 }
 
 /* Move to the next entry in the set. Returns the object at the current
@@ -245,7 +245,7 @@ void setTypeResetIterator(setTypeIterator *si) {
  *
  * When there are no more elements -1 is returned. */
 int setTypeNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele) {
-    if (((setTypeOps*)(si->typeOps))->iterNext(si, str, len, llele) == -1) return -1;
+    if (si->typeOps->iterNext(si, str, len, llele) == -1) return -1;
     return si->encoding;
 }
 
