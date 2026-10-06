@@ -95,7 +95,7 @@ static void isIterReset(setTypeIterator *si) {
     /* Nothing to release for an intset iterator. */
 }
 
-static int isIterNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele) {
+int isIterNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele) {
     UNUSED(len);
     if (!intsetGet(si->subject->ptr, si->ii++, llele)) return -1;
     *str = NULL;

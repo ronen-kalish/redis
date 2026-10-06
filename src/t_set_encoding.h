@@ -78,4 +78,7 @@ extern const setTypeOps setTypeOpsIntset;
 extern const setTypeOps setTypeOpsListpack;
 extern const setTypeOps setTypeOpsHT;
 
+extern int isIterNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele);
+extern int lpIterNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele);
+extern int htIterNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele);
 #endif

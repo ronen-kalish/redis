@@ -92,7 +92,7 @@ static void lpIterReset(setTypeIterator *si) {
     /* Nothing to release for a listpack iterator. */
 }
 
-static int lpIterNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele) {
+int lpIterNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele) {
     unsigned char *lp = si->subject->ptr;
     unsigned char *lpi = si->lpi;
     if (lpi == NULL) {

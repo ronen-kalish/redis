@@ -245,6 +245,31 @@ void setTypeResetIterator(setTypeIterator *si) {
  *
  * When there are no more elements -1 is returned. */
 int setTypeNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele) {
+    int result;
+
+    switch (si->encoding) {
+    case OBJ_ENCODING_HT:
+        result = htIterNext(si, str, len, llele);
+        break;
+
+    case OBJ_ENCODING_INTSET:
+        result = isIterNext(si, str, len, llele);
+        break;
+
+    case OBJ_ENCODING_LISTPACK:
+        result = lpIterNext(si, str, len, llele);
+        break;
+
+    default:
+        serverPanic("Unknown set encoding");
+    }
+
+    if (result == -1)
+        return -1;           /* Finished. */
+
+    return si->encoding;     /* Found a member. */
+
+
     if (si->typeOps->iterNext(si, str, len, llele) == -1) return -1;
     return si->encoding;
 }

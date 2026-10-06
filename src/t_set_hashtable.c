@@ -65,7 +65,7 @@ static void htIterReset(setTypeIterator *si) {
     dictResetIterator(&si->di);
 }
 
-static int htIterNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele) {
+int htIterNext(setTypeIterator *si, char **str, size_t *len, int64_t *llele) {
     dictEntry *de = dictNext(&si->di);
     if (de == NULL) return -1;
     *str = dictGetKey(de);
