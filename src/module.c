@@ -12433,7 +12433,7 @@ int RM_ScanKey(RedisModuleKey *key, RedisModuleScanCursor *cursor, RedisModuleSc
     } else if (kv->type == OBJ_SET) {
         setTypeIterator si;
         sds sdsele;
-        setTypeInitIterator(&si, kv);
+        setTypeInitIterator(&si, kv, SET_ITER_SKIP_EXPIRED);
         while ((sdsele = setTypeNextObject(&si)) != NULL) {
             robj *field = createObject(OBJ_STRING, sdsele);
             fn(key, field, NULL, privdata);
