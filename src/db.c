@@ -1986,7 +1986,10 @@ void scanGenericCommand(client *c, robj *o, unsigned long long cursor) {
         /* Cursor is always 0 given we iterate over all set */
         addReplyBulkLongLong(c,0);
         /* If there is no pattern the length is the entire set size, otherwise we defer the reply size */
-        if (use_pattern)
+        /* Expired members that are not removed yet are skipped, so the length of the
+         * reply is not known in advance for sets that can hold expirations. */
+        const int deferred_len = use_pattern || setTypeHasExpireSupport(o);
+        if (deferred_len)
             replylen = addReplyDeferredLen(c);
         else {
             array_reply_len = setTypeSize(o);
@@ -2008,7 +2011,7 @@ void scanGenericCommand(client *c, robj *o, unsigned long long cursor) {
             cur_length++;
         }
         setTypeResetIterator(&si);
-        if (use_pattern)
+        if (deferred_len)
             setDeferredArrayLen(c,replylen,cur_length);
         else
             serverAssert(cur_length == array_reply_len); /* fail on corrupt data */
