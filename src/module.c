@@ -12326,6 +12326,11 @@ static void moduleScanKeyCallback(void *privdata, const dictEntry *de, dictEntry
     robj *field = NULL;
     robj *value = NULL;
     if (kv->type == OBJ_SET) {
+        /* A member that is logically expired is not returned, unless asked. */
+        if ((!(data->key->mode & REDISMODULE_OPEN_KEY_ACCESS_EXPIRED)) &&
+            setEntryHasExpiry((SetEntry *)key) &&
+            setTypeExpireTimeElapsed(setEntryGetExpiry((SetEntry *)key)))
+            return;
         field = createStringObject(key, sdslen(key));
         value = NULL;
     } else if (kv->type == OBJ_HASH) {
@@ -12433,7 +12438,7 @@ int RM_ScanKey(RedisModuleKey *key, RedisModuleScanCursor *cursor, RedisModuleSc
     } else if (kv->type == OBJ_SET) {
         setTypeIterator si;
         sds sdsele;
-        setTypeInitIterator(&si, kv);
+        setTypeInitIterator(&si, kv, SET_ITER_SKIP_EXPIRED);
         while ((sdsele = setTypeNextObject(&si)) != NULL) {
             robj *field = createObject(OBJ_STRING, sdsele);
             fn(key, field, NULL, privdata);
